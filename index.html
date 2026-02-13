@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Shiku ❤️</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    overflow: hidden;
+    font-family: 'Great Vibes', cursive;
+    color: white;
+}
+
+/* Background Layer */
+.background {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: opacity 1s ease;
+    z-index: -2;
+}
+
+/* Dark Overlay */
+.overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.55);
+    z-index: -1;
+}
+
+/* Frame */
+.frame {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+}
+
+.frame.active {
+    opacity: 1;
+}
+
+/* Text */
+.message {
+    font-size: 1.6em;
+    max-width: 90%;
+    line-height: 1.5;
+    min-height: 120px;
+}
+
+/* Buttons */
+.buttons {
+    margin-top: 30px;
+    display: flex;
+    gap: 20px;
+}
+
+button {
+    padding: 10px 22px;
+    border-radius: 25px;
+    border: none;
+    font-size: 0.9em;
+    cursor: pointer;
+    font-family: sans-serif;
+    transition: 0.3s ease;
+}
+
+.next-btn {
+    background: crimson;
+    color: white;
+}
+
+.back-btn {
+    background: white;
+    color: black;
+}
+
+button:hover {
+    transform: scale(1.1);
+}
+
+/* Floating Hearts */
+.heart {
+    position: fixed;
+    bottom: -10px;
+    font-size: 18px;
+    animation: floatUp linear infinite;
+    color: rgba(255,0,0,0.7);
+}
+
+@keyframes floatUp {
+    from {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateY(-110vh);
+        opacity: 0;
+    }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .message {
+        font-size: 1.3em;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="background" id="bg"></div>
+<div class="overlay"></div>
+
+<div class="frame active">
+    <div class="message"></div>
+    <div class="buttons">
+        <button class="next-btn">Next ❤️</button>
+    </div>
+</div>
+
+<audio id="music" loop>
+    <source src="Jux ft Bien - Lucky Now Lyrics.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+
+const frames = [
+    { text: "Happy Valentine’s Day, Shiku ❤️", img: "IMG-20250920-WA0011.jpeg" },
+    { text: "I know sometimes you may wonder… who I truly am, and what I intend.", img: "IMG_2911.jpeg" },
+    { text: "I didn’t ask you for Valentine’s this year… because I envisioned making this your last Valentine’s while you’re single.", img: "IMG_2911.jpeg" },
+    { text: "I’ve admired you quietly, treasured every step of our journey, and felt something special between us.", img: "IMG_0797.jpeg" },
+    { text: "Is there room for a future between us?", img: "IMG-20250920-WA0012.jpeg" },
+    { text: "Maybe I’m still growing, still learning… but I’ve manifested to be the best version of myself for you.", img: "IMG-20251230-WA0023(1).jpeg" },
+    { text: "To me, you are the most resplendent gem in my world.", img: "IMG_0796.jpeg" },
+    { text: "I’m aligning myself to give you a life colored by my best… soon, we’ll define us.", img: "IMG_0797.jpeg" },
+    { text: "For this Valentine’s, enjoy the pleasure of your last single era 😉❤️", img: "IMG_0796.jpeg" },
+    { text: "Sent with intention ❤️ — Christian", img: "IMG_2911.jpeg" },
+    { text: "", img: "IMG-20250920-WA0011.jpeg", final: true }
+];
+
+let current = 0;
+const bg = document.getElementById("bg");
+const frame = document.querySelector(".frame");
+const message = document.querySelector(".message");
+const nextBtn = document.querySelector(".next-btn");
+
+function typeText(text, callback) {
+    message.innerHTML = "";
+    let i = 0;
+    const speed = 45;
+    function typing() {
+        if (i < text.length) {
+            message.innerHTML += text.charAt(i);
+            i++;
+            setTimeout(typing, speed);
+        } else {
+            if (callback) callback();
+        }
+    }
+    typing();
+}
+
+function showFrame(index) {
+    frame.classList.remove("active");
+    setTimeout(() => {
+        current = index;
+        bg.style.backgroundImage = `url('${frames[index].img}')`;
+
+        if (frames[index].final) {
+            message.innerHTML = "Is there room for a future between us? ❤️";
+            frame.querySelector(".buttons").innerHTML = `
+                <button class="back-btn">Back</button>
+                <button class="next-btn">Yes ❤️</button>
+            `;
+            frame.querySelector(".back-btn").onclick = () => showFrame(current - 1);
+            frame.querySelector(".next-btn").onclick = () => {
+                message.innerHTML = "P.S. Every line of code was crafted just for you ❤️";
+                frame.querySelector(".buttons").style.display = "none";
+            };
+        } else {
+            typeText(frames[index].text);
+            frame.querySelector(".buttons").innerHTML = `
+                ${index > 0 ? '<button class="back-btn">Back</button>' : ''}
+                <button class="next-btn">Next ❤️</button>
+            `;
+            if (index > 0)
+                frame.querySelector(".back-btn").onclick = () => showFrame(current - 1);
+            frame.querySelector(".next-btn").onclick = () => showFrame(current + 1);
+        }
+
+        frame.classList.add("active");
+    }, 400);
+}
+
+showFrame(0);
+
+/* Floating Hearts */
+function createHeart() {
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = "❤️";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.animationDuration = 4 + Math.random() * 4 + "s";
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 8000);
+}
+setInterval(createHeart, 800);
+
+/* Music Start */
+const music = document.getElementById("music");
+document.body.addEventListener("click", () => {
+    music.play().catch(()=>{});
+}, { once: true });
+
+</script>
+
+</body>
+</html>
