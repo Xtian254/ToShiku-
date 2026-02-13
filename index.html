@@ -118,10 +118,44 @@ button:hover {
     }
 }
 
+/* Popup */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+.popup {
+    background: #111;
+    padding: 25px 30px;
+    border-radius: 15px;
+    text-align: center;
+    max-width: 80%;
+}
+
+.popup p {
+    margin-bottom: 20px;
+    font-size: 1.2em;
+}
+
+.popup button {
+    margin: 0 10px;
+}
+
 /* Responsive */
 @media (max-width: 600px) {
     .message {
         font-size: 1.3em;
+    }
+    .popup p {
+        font-size: 1em;
     }
 }
 </style>
@@ -144,7 +178,6 @@ button:hover {
 </audio>
 
 <script>
-
 const frames = [
     { text: "Happy Valentine’s Day, Shiku ❤️", img: "IMG-20250920-WA0011.jpeg" },
     { text: "I know sometimes you may wonder… who I truly am, and what I intend.", img: "IMG_2911.jpeg" },
@@ -163,7 +196,6 @@ let current = 0;
 const bg = document.getElementById("bg");
 const frame = document.querySelector(".frame");
 const message = document.querySelector(".message");
-const nextBtn = document.querySelector(".next-btn");
 
 function typeText(text, callback) {
     message.innerHTML = "";
@@ -181,6 +213,28 @@ function typeText(text, callback) {
     typing();
 }
 
+// Create Popup
+function createPopup(text, yesCallback, noCallback) {
+    const overlay = document.createElement("div");
+    overlay.className = "popup-overlay";
+    const popup = document.createElement("div");
+    popup.className = "popup";
+    popup.innerHTML = `<p>${text}</p>
+                       <button class="popup-yes">Yes</button>
+                       <button class="popup-no">No</button>`;
+    overlay.appendChild(popup);
+    document.body.appendChild(overlay);
+
+    overlay.querySelector(".popup-yes").onclick = () => {
+        overlay.remove();
+        yesCallback();
+    };
+    overlay.querySelector(".popup-no").onclick = () => {
+        overlay.remove();
+        noCallback();
+    };
+}
+
 function showFrame(index) {
     frame.classList.remove("active");
     setTimeout(() => {
@@ -192,48 +246,9 @@ function showFrame(index) {
             frame.querySelector(".buttons").innerHTML = `
                 <button class="back-btn">Back</button>
                 <button class="next-btn">Yes ❤️</button>
+                <button class="no-btn">No ❌</button>
             `;
+
             frame.querySelector(".back-btn").onclick = () => showFrame(current - 1);
-            frame.querySelector(".next-btn").onclick = () => {
-                message.innerHTML = "P.S. Every line of code was crafted just for you ❤️";
-                frame.querySelector(".buttons").style.display = "none";
-            };
-        } else {
-            typeText(frames[index].text);
-            frame.querySelector(".buttons").innerHTML = `
-                ${index > 0 ? '<button class="back-btn">Back</button>' : ''}
-                <button class="next-btn">Next ❤️</button>
-            `;
-            if (index > 0)
-                frame.querySelector(".back-btn").onclick = () => showFrame(current - 1);
-            frame.querySelector(".next-btn").onclick = () => showFrame(current + 1);
-        }
 
-        frame.classList.add("active");
-    }, 400);
-}
-
-showFrame(0);
-
-/* Floating Hearts */
-function createHeart() {
-    const heart = document.createElement("div");
-    heart.className = "heart";
-    heart.innerHTML = "❤️";
-    heart.style.left = Math.random() * 100 + "vw";
-    heart.style.animationDuration = 4 + Math.random() * 4 + "s";
-    document.body.appendChild(heart);
-    setTimeout(() => heart.remove(), 8000);
-}
-setInterval(createHeart, 800);
-
-/* Music Start */
-const music = document.getElementById("music");
-document.body.addEventListener("click", () => {
-    music.play().catch(()=>{});
-}, { once: true });
-
-</script>
-
-</body>
-</html>
+            frame.querySelector(".ne
