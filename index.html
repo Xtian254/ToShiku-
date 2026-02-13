@@ -251,4 +251,71 @@ function showFrame(index) {
 
             frame.querySelector(".back-btn").onclick = () => showFrame(current - 1);
 
-            frame.querySelector(".ne
+            frame.querySelector(".next-btn").onclick = () => {
+                // Yes clicked → Ask if she loves you back
+                createPopup(
+                    "Do you love me back? 😌❤️",
+                    () => { // She says Yes → romantic reveal
+                        typeText("I can’t wait to love you the way you deserve… to give you my full attention, respect, and devotion, and to create a world where you feel treasured in every way ❤️✨", () => {
+                            // After click, show P.S. frame
+                            frame.querySelector(".buttons").innerHTML = `<button class="next-btn">Next ❤️</button>`;
+                            frame.querySelector(".next-btn").onclick = () => {
+                                message.innerHTML = "P.S. Every line of code was crafted just for you ❤️";
+                                frame.querySelector(".buttons").style.display = "none";
+                            };
+                        });
+                        frame.querySelector(".buttons").innerHTML = `<button class="next-btn">Next ❤️</button>`;
+                    },
+                    () => { // She says No → go to frame 6
+                        showFrame(6);
+                    }
+                );
+            };
+
+            frame.querySelector(".no-btn").onclick = () => {
+                // No clicked → ask "Are you sure?"
+                createPopup(
+                    "Hmm… I just want to be sure 😅. Do you really mean that?",
+                    () => { showFrame(10); }, // Confirm No → back to Sent with intention
+                    () => { showFrame(current); } // Cancel No → stay on proposal
+                );
+            };
+
+        } else {
+            typeText(frames[index].text);
+            frame.querySelector(".buttons").innerHTML = `
+                ${index > 0 ? '<button class="back-btn">Back</button>' : ''}
+                <button class="next-btn">Next ❤️</button>
+            `;
+            if (index > 0)
+                frame.querySelector(".back-btn").onclick = () => showFrame(current - 1);
+            frame.querySelector(".next-btn").onclick = () => showFrame(current + 1);
+        }
+
+        frame.classList.add("active");
+    }, 400);
+}
+
+showFrame(0);
+
+/* Floating Hearts */
+function createHeart() {
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = "❤️";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.animationDuration = 4 + Math.random() * 4 + "s";
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 8000);
+}
+setInterval(createHeart, 800);
+
+/* Music Start */
+const music = document.getElementById("music");
+document.body.addEventListener("click", () => {
+    music.play().catch(()=>{});
+}, { once: true });
+</script>
+
+</body>
+</html>
